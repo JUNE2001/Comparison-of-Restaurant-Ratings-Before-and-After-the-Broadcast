@@ -3,7 +3,7 @@ from datetime import datetime
 
 # API 키 및 식당 정보 설정
 API_KEY = ''  # 발급받은 API 키를 여기에 입력하세요.
-PLACE_NAME = '모수'
+PLACE_NAME = '가야가야'
 PLACE_LOCATION = '서울'
 
 # 장소 검색 URL
