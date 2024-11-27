@@ -1,3 +1,5 @@
+#https://console.cloud.google.com/apis/credentials?project=authentic-wharf-443001-s6 #API키 발급 주소
+
 from googleapiclient.discovery import build
 
 def get_youtube_urls(api_key, search_query, max_results=20):
