@@ -25,7 +25,7 @@ def get_youtube_urls(api_key, search_query, max_results=20):
     return video_urls
 
 # API 키 입력
-api_key = "AIzaSyDcyPygjXsqK_FkkI9wE9xGXiffHtb5P_4"  # 여기에 발급받은 API 키를 입력하세요
+api_key = "AIzaSyAa70FhmVm9DB1ClKR_fXG4ifOMyPzapAo"  # 여기에 발급받은 API 키를 입력하세요
 
 # 검색어와 결과 개수 설정
 search_term = input("검색어를 입력하세요: ")
