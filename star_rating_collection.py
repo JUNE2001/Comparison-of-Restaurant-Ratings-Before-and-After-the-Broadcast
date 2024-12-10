@@ -39,13 +39,13 @@ def get_place_reviews(api_key, place_id):
     else:
         raise ValueError(f"Error fetching place details. Status: {data['status']}")
 
-def print_reviews(place_name, reviews):
+def print_reviews(place_name, reviews, max):
     """
     장소 리뷰 정보를 출력합니다.
     """
     print(f"Reviews for {place_name}:")
     if reviews:
-        for review in reviews[:20]:  # 최대 20개 리뷰 출력
+        for review in reviews[:max]:  # 최대 20개 리뷰 출력
             review_time = datetime.fromtimestamp(review['time']).strftime('%Y-%m-%d %H:%M:%S')
             print(f"Rating: {review['rating']}")
             print(f"Review: {review['text']}")

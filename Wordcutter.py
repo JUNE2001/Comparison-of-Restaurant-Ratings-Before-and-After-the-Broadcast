@@ -1,6 +1,8 @@
 import requests
 import json
 import csv
+import os
+import pandas as pd
 
 # 전역 변수로 API 키 설정
 API_KEY = "AIzaSyDnp_wXSpGmaGcIujrFzbU0gqPSk-R22ZQ"
@@ -80,6 +82,41 @@ def save_sentiment_to_csv(word_sentiment_data: list, output_file: str) -> None:
         writer = csv.DictWriter(file, fieldnames=["comment", "word", "score", "magnitude"])
         writer.writeheader()
         writer.writerows(word_sentiment_data)
+
+def analyze_sentiment_from_csv(input_csv_file, text_column, output_csv_file):
+    """
+    CSV 파일에서 특정 열의 텍스트 데이터를 추출하여 감정 분석을 수행하고 결과를 저장합니다.
+
+    매개변수:
+        input_csv_file: 입력 CSV 파일 경로.
+        text_column: 텍스트가 포함된 열 이름.
+        output_csv_file: 감정 분석 결과를 저장할 CSV 파일 경로.
+    """
+    # 1. 입력 CSV 파일 읽기
+    if not os.path.exists(input_csv_file):
+        print(f"입력 CSV 파일 '{input_csv_file}'이(가) 존재하지 않습니다.")
+        return
+
+    try:
+        df = pd.read_csv(input_csv_file, encoding="utf-8-sig")
+    except Exception as e:
+        print(f"CSV 파일 읽기 중 오류 발생: {e}")
+        return
+
+    # 2. 지정된 열에서 텍스트 데이터 추출
+    if text_column not in df.columns:
+        print(f"지정된 열 '{text_column}'이(가) CSV 파일에 존재하지 않습니다.")
+        return
+
+    comments = df[text_column].dropna().tolist()
+
+    # 3. 감정 분석 수행
+    word_sentiment_results = extract_word_level_sentiment_from_comments(comments)
+
+    # 4. 감정 분석 결과 저장
+    save_sentiment_to_csv(word_sentiment_results, output_csv_file)
+    print(f"감정 분석 결과가 '{output_csv_file}' 파일에 저장되었습니다.")
+
 
 # 사용 예시
 if __name__ == "__main__":

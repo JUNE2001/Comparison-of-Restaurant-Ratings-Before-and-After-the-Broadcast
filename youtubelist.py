@@ -24,15 +24,16 @@ def get_youtube_urls(api_key, search_query, max_results=20):
     
     return video_urls
 
-# API 키 입력
-api_key = "AIzaSyAa70FhmVm9DB1ClKR_fXG4ifOMyPzapAo"  # 여기에 발급받은 API 키를 입력하세요
+if __name__ == "__main__":
+    # API 키 입력
+    api_key = "AIzaSyAa70FhmVm9DB1ClKR_fXG4ifOMyPzapAo"  # 여기에 발급받은 API 키를 입력하세요
 
-# 검색어와 결과 개수 설정
-search_term = input("검색어를 입력하세요: ")
-max_results = 20
+    # 검색어와 결과 개수 설정
+    search_term = input("검색어를 입력하세요: ")
+    max_results = 20
 
-# 동영상 URL 가져오기
-videos = get_youtube_urls(api_key, search_term, max_results)
-print("\n=== 검색 결과 ===")
-for url in videos:
-    print(url)
+    # 동영상 URL 가져오기
+    videos = get_youtube_urls(api_key, search_term, max_results)
+    print("\n=== 검색 결과 ===")
+    for url in videos:
+        print(url)

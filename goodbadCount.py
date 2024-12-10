@@ -1,12 +1,12 @@
 import pandas as pd
 
-def good_bad_count(file_path):
+def good_bad_count(file_path, text_column):
     # CSV 파일 읽기
     df = pd.read_csv(file_path)
 
     # 'value' 값에 따라 카운트하기
-    good_count = len(df[df['value'] > 0])  # value가 양수인 경우
-    bad_count = len(df[df['value'] < 0])   # value가 음수인 경우
+    good_count = len(df[df[text_column] > 0])  # value가 양수인 경우
+    bad_count = len(df[df[text_column] < 0])   # value가 음수인 경우
 
     return good_count, bad_count
 
