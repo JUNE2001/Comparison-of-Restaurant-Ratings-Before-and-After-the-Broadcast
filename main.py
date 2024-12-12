@@ -16,15 +16,14 @@ highlight_dates = ["2024-01", "2024-03", "2024-05"] ## 강조하고 싶은 날�
 
 max_results = 10 ## 유튜브 리스트 수
 max_reviews = 20 ## 수집 리뷰
-videos = yl.get_youtube_urls(api_key, item, max_results)
+##videos = yl.get_youtube_urls(api_key, item, max_results)
 
 ## 키값 아낄 때 쓰는 용도
-## videos = ['https://www.youtube.com/watch?v=Q8O4fyMWYWw', 'https://www.youtube.com/watch?v=ny3mUuwHqO4']
+videos = ['https://www.youtube.com/watch?v=Q8O4fyMWYWw', 'https://www.youtube.com/watch?v=ny3mUuwHqO4']
 
 merged_csv_file = 'MergedYoutubeComments.csv' ## 댓글 저장 csv명
 
-for url in videos:
-    ycs.process_youtube_comments(videos, merged_csv_file)
+ycs.process_youtube_comments(videos, merged_csv_file)
 
 
 output_csv_file = 'SentimentAnalysisResults.csv'

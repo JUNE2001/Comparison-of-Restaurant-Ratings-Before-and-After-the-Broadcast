@@ -35,53 +35,49 @@ def analyze_sentiment(text_content: str, language_code: str = "en") -> dict:
     else:
         raise Exception(f"API 에러: {response.status_code}, {response.text}")
 
-def extract_word_level_sentiment_from_comments(comments: list) -> list:
+def extract_comment_level_sentiment(comments: list) -> list:
     """
-    여러 댓글을 처리하여 각 단어의 감정 점수와 강도를 추출합니다.
+    여러 댓글을 처리하여 댓글 전체의 감정 점수와 강도를 추출합니다.
 
     매개변수:
         comments: 분석할 댓글 리스트.
 
     반환값:
-        단어별 감정 분석 결과 리스트.
+        댓글별 감정 분석 결과 리스트.
     """
-    all_word_sentiment_data = []
+    comment_sentiment_data = []
 
     for comment in comments:
-        words = comment.split()
-        for word in words:
-            try:
-                result = analyze_sentiment(word)
-                document_sentiment = result.get("documentSentiment", {})
-                all_word_sentiment_data.append({
-                    "comment": comment,
-                    "word": word,
-                    "score": document_sentiment.get("score", 0),
-                    "magnitude": document_sentiment.get("magnitude", 0),
-                })
-            except Exception as e:
-                print(f"단어 '{word}' 분석 중 에러 발생 (댓글: '{comment}') - {e}")
-                all_word_sentiment_data.append({
-                    "comment": comment,
-                    "word": word,
-                    "score": "Error",
-                    "magnitude": "Error",
-                })
+        try:
+            result = analyze_sentiment(comment)
+            document_sentiment = result.get("documentSentiment", {})
+            comment_sentiment_data.append({
+                "comment": comment,
+                "score": document_sentiment.get("score", 0),
+                "magnitude": document_sentiment.get("magnitude", 0),
+            })
+        except Exception as e:
+            print(f"댓글 '{comment}' 분석 중 에러 발생 - {e}")
+            comment_sentiment_data.append({
+                "comment": comment,
+                "score": "Error",
+                "magnitude": "Error",
+            })
 
-    return all_word_sentiment_data
+    return comment_sentiment_data
 
-def save_sentiment_to_csv(word_sentiment_data: list, output_file: str) -> None:
+def save_sentiment_to_csv(comment_sentiment_data: list, output_file: str) -> None:
     """
-    단어별 감정 분석 결과를 CSV 파일로 저장합니다.
+    댓글별 감정 분석 결과를 CSV 파일로 저장합니다.
 
     매개변수:
-        word_sentiment_data: 단어별 감정 분석 결과 리스트.
+        comment_sentiment_data: 댓글별 감정 분석 결과 리스트.
         output_file: 저장할 CSV 파일 경로.
     """
     with open(output_file, mode="w", newline="", encoding="utf-8") as file:
-        writer = csv.DictWriter(file, fieldnames=["comment", "word", "score", "magnitude"])
+        writer = csv.DictWriter(file, fieldnames=["comment", "score", "magnitude"])
         writer.writeheader()
-        writer.writerows(word_sentiment_data)
+        writer.writerows(comment_sentiment_data)
 
 def analyze_sentiment_from_csv(input_csv_file, text_column, output_csv_file):
     """
@@ -111,22 +107,15 @@ def analyze_sentiment_from_csv(input_csv_file, text_column, output_csv_file):
     comments = df[text_column].dropna().tolist()
 
     # 3. 감정 분석 수행
-    word_sentiment_results = extract_word_level_sentiment_from_comments(comments)
+    comment_sentiment_results = extract_comment_level_sentiment(comments)
 
     # 4. 감정 분석 결과 저장
-    save_sentiment_to_csv(word_sentiment_results, output_csv_file)
+    save_sentiment_to_csv(comment_sentiment_results, output_csv_file)
     print(f"감정 분석 결과가 '{output_csv_file}' 파일에 저장되었습니다.")
 
 
 # 사용 예시
 if __name__ == "__main__":
-    comments = [
-        "이 제품 정말 마음에 들어요! 제 삶을 더 편하게 해줍니다.",
-        "서비스가 정말 최악이었어요. 너무 실망했습니다.",
-        "이건 제가 경험한 것 중 최고입니다!",
-        "가끔은 작동하지만, 다른 때는 완전히 실패해요."
-    ]
-    print("댓글 감정 분석을 시작합니다...")
-    word_sentiment_results = extract_word_level_sentiment_from_comments(comments)
-    save_sentiment_to_csv(word_sentiment_results, "multiple_comments_sentiment_analysis.csv")
-    print("단어별 감정 분석 결과가 'multiple_comments_sentiment_analysis.csv' 파일에 저장되었습니다.")
+    merged_csv_file = 'MergedYoutubeComments.csv'
+    output_csv_file = 'SentimentAnalysisResults.csv'
+    analyze_sentiment_from_csv(merged_csv_file, 'text', output_csv_file)

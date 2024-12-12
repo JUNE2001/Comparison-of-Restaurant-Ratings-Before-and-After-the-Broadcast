@@ -63,7 +63,7 @@ def process_youtube_comments(urls, merged_csv_file):
 if __name__ == "__main__":
     # 유튜브 URL 목록
     urls = [
-        'https://www.youtube.com/shorts/FLvMtj0NnNk'
+        'https://youtu.be/rBnPsx25XsM?si=XQ75mYnXPfzi-szU'
     ]
 
     # 댓글을 저장할 병합 CSV 파일 이름
