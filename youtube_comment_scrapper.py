@@ -2,6 +2,7 @@ import os
 import json
 import pandas as pd
 import subprocess
+from datetime import datetime
 
 def download_comments(url, output_file):
     """
@@ -25,6 +26,17 @@ def json_to_dataframe(json_file):
         json_data = [json.loads(line) for line in f]
     return pd.DataFrame(json_data)
 
+def filter_comments_by_date(df, start_date, end_date):
+    """
+    DataFrame에서 특정 기간 내 댓글만 필터링합니다.
+    start_date, end_date: 'YYYY-MM-DD' 형식의 문자열
+    """
+    # UNIX 타임스탬프를 datetime으로 변환
+    df['time_parsed'] = pd.to_datetime(df['time_parsed'], unit='s')
+    start_date = pd.to_datetime(start_date)
+    end_date = pd.to_datetime(end_date)
+    return df[(df['time_parsed'] >= start_date) & (df['time_parsed'] <= end_date)]
+
 def save_dataframe_to_csv(df, csv_file, append=False):
     """
     DataFrame을 CSV 파일로 저장합니다.
@@ -34,7 +46,7 @@ def save_dataframe_to_csv(df, csv_file, append=False):
     else:
         df.to_csv(csv_file, index=False, encoding='utf-8-sig')
 
-def process_youtube_comments(urls, merged_csv_file):
+def process_youtube_comments(urls, merged_csv_file, start_date=None, end_date=None):
     """
     여러 YouTube URL에서 댓글을 다운로드하고 병합된 CSV 파일로 저장합니다.
     """
@@ -48,9 +60,9 @@ def process_youtube_comments(urls, merged_csv_file):
         # JSON 데이터를 DataFrame으로 변환
         df = json_to_dataframe(json_file)
 
-        # 각 URL별 개별 CSV 저장 (원한다면 사용)
-        # csv_file = f'YoutubeComments_{i}.csv'
-        # save_dataframe_to_csv(df, csv_file)
+        # 특정 기간으로 댓글 필터링
+        if start_date and end_date:
+            df = filter_comments_by_date(df, start_date, end_date)
 
         # 병합된 CSV 파일에 저장
         save_dataframe_to_csv(df, merged_csv_file, append=True)
@@ -63,11 +75,15 @@ def process_youtube_comments(urls, merged_csv_file):
 if __name__ == "__main__":
     # 유튜브 URL 목록
     urls = [
-        'https://youtu.be/rBnPsx25XsM?si=XQ75mYnXPfzi-szU'
+        'https://youtu.be/rBnPsx25XsM?si=XQ75mYnXPfzi-szU'  # 예시 URL
     ]
 
     # 댓글을 저장할 병합 CSV 파일 이름
-    merged_csv_file = 'MergedYoutubeComments.csv'
+    merged_csv_file = 'FilteredYoutubeComments.csv'
+
+    # 필터링 기간 설정
+    start_date = '2024-12-10'  # 시작 날짜
+    end_date = '2024-12-11'    # 종료 날짜
 
     # 프로세스 실행
-    process_youtube_comments(urls, merged_csv_file)
+    process_youtube_comments(urls, merged_csv_file, start_date, end_date)
