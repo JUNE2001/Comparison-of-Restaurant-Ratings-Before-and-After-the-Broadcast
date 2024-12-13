@@ -56,7 +56,7 @@ def print_reviews(place_name, reviews, max):
 # 메인 실행부
 if __name__ == "__main__":
     API_KEY = ''  # 발급받은 API 키를 여기에 입력하세요.
-    PLACE_NAME = '가야가야'
+    PLACE_NAME = '쵸이닷'
     PLACE_LOCATION = '서울'
     
     try:
