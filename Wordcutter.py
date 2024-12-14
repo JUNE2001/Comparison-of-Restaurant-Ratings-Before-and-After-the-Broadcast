@@ -46,8 +46,10 @@ def extract_comment_level_sentiment(comments: list) -> list:
         댓글별 감정 분석 결과 리스트.
     """
     comment_sentiment_data = []
+    total_comments = len(comments)
 
-    for comment in comments:
+    for idx, comment in enumerate(comments):
+        print(f"[{idx + 1}/{total_comments}] 댓글 분석 중...")  # 진행 상황 출력
         try:
             result = analyze_sentiment(comment)
             document_sentiment = result.get("documentSentiment", {})
@@ -88,7 +90,7 @@ def analyze_sentiment_from_csv(input_csv_file, text_column, output_csv_file):
         text_column: 텍스트가 포함된 열 이름.
         output_csv_file: 감정 분석 결과를 저장할 CSV 파일 경로.
     """
-    # 1. 입력 CSV 파일 읽기
+    print("CSV 파일 읽기 시작...")
     if not os.path.exists(input_csv_file):
         print(f"입력 CSV 파일 '{input_csv_file}'이(가) 존재하지 않습니다.")
         return
@@ -99,17 +101,23 @@ def analyze_sentiment_from_csv(input_csv_file, text_column, output_csv_file):
         print(f"CSV 파일 읽기 중 오류 발생: {e}")
         return
 
+    print("CSV 파일 읽기 완료.")
+
     # 2. 지정된 열에서 텍스트 데이터 추출
     if text_column not in df.columns:
         print(f"지정된 열 '{text_column}'이(가) CSV 파일에 존재하지 않습니다.")
         return
 
     comments = df[text_column].dropna().tolist()
+    print(f"텍스트 데이터 {len(comments)}개 추출 완료.")
 
     # 3. 감정 분석 수행
+    print("감정 분석 시작...")
     comment_sentiment_results = extract_comment_level_sentiment(comments)
+    print("감정 분석 완료.")
 
     # 4. 감정 분석 결과 저장
+    print("감정 분석 결과 저장 중...")
     save_sentiment_to_csv(comment_sentiment_results, output_csv_file)
     print(f"감정 분석 결과가 '{output_csv_file}' 파일에 저장되었습니다.")
 
